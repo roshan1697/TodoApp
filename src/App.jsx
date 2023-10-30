@@ -6,7 +6,7 @@ import axios from 'axios'
 function App() {
   const [todos, setTodos] = useState([])
  
-    // fetch all todos from server
+    
   useEffect(()=>{
     
     axios.get('http://localhost:3000/')

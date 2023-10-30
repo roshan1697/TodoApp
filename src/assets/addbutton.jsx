@@ -1,12 +1,29 @@
+import axios from "axios"
 import { useState } from "react"
 
 
 const AddButton = () => {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
     const dropdownButton = document.querySelector('#hs-dropdown-basic')
     const dropdownList =document.querySelector('#dropdownlist')
     const [open, setOpen] = useState(false)
 
-   
+   const handleClick = () => {
+    
+    const data = {
+      title,
+      description
+    }
+    axios.post('http://localhost:3000/', data)
+      .then(()=>{
+        console.log('sucess')
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
+    
+   }
 
 
   return (
@@ -22,9 +39,11 @@ const AddButton = () => {
     : 
      ' hidden'}  
      id='dropdownlist'>
-      <input type="text" placeholder="Title" className="block w-full px-4 py-3 mt-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500" />
-<textarea className="block w-full px-4 py-3 mt-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 " rows="3" placeholder="Description"></textarea>
-<button type="button" className="inline-flex items-center justify-center float-right gap-2 px-6 py-3 text-sm font-semibold text-white transition-all bg-blue-500 border border-transparent rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 m-2.5">
+      <input type="text" onChange={(e)=>{setTitle(e.target.value)}} placeholder="Title" className="block w-full px-4 py-3 mt-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500" />
+<textarea onChange={(e)=>{
+  setDescription(e.target.value)
+}} className="block w-full px-4 py-3 mt-2 text-sm border border-gray-200 rounded-md focus:border-blue-500 focus:ring-blue-500 " rows="3" placeholder="Description"></textarea>
+<button type="button" onClick={handleClick} className="inline-flex items-center justify-center float-right gap-2 px-6 py-3 text-sm font-semibold text-white transition-all bg-blue-500 border border-transparent rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 m-2.5">
   ADD
 </button>
     </div>
