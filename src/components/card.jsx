@@ -1,4 +1,4 @@
-import axios from "axios"
+
 import DeleteButton from "../assets/deletebutton"
 
 const Card = (todo) => {

@@ -1,7 +1,7 @@
 import express from 'express';
-// import { createServer } from 'node:http';
+import { createServer } from 'node:http';
 import{ mongoURL} from './config.js'
-// import { Server } from 'socket.io';
+import { Server } from 'socket.io';
 import { Todo } from './TodoSchema.js'
 import cors from 'cors'
 import mongoose from 'mongoose'
@@ -9,8 +9,12 @@ import mongoose from 'mongoose'
 
 
 const app = express()
-// const server = createServer(app);
-// const io = new Server(server)
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin:'http://localhost:5173',
+  }
+})
 app.use(express.json())
 
 
@@ -49,6 +53,7 @@ app.get('/', async (req, res) => {
             description: req.body.description
           }
           const todo = await Todo.create(newTodo)
+          io.emit('newTodo', todo)
           return res.status(201).send(todo)
         } catch (err) {
           console.log(err);
@@ -62,6 +67,7 @@ app.delete('/:id', async (req, res) => {
       const { id } = req.params
   
       const result = await Todo.findByIdAndDelete(id)
+      io.emit('deleteTodo', id)
   
       if (!result) {
         return res.status(404).send('Book not found' )
@@ -81,12 +87,21 @@ app.delete('/:id', async (req, res) => {
   //     });
   // });
 
+  io.on('connection', (socket) => {
+    console.log('User connected: ',socket.id)
+
+    socket.on('disconnect',()=>{
+      console.log('User disconnected: ',socket.id)
+
+    })
+  })
+
 
 
 mongoose.connect(mongoURL).then(()=>
 {
     console.log('db connected')
-    app.listen(3000,()=>{
+    server.listen(3000,()=>{
         console.log('connected')
     })
 })

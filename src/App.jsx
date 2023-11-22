@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react'
 import Navbar from './components/navbar'
 import Card from './components/card'
 import axios from 'axios'
-
+import { io } from 'socket.io-client'
 function App() {
   const [todos, setTodos] = useState([])
- 
+  
+  const socket = io('http://localhost:3000',{ autoConnect: false})
+
     
   useEffect(()=>{
-    
+    socket.connect()
     axios.get('http://localhost:3000/')
     .then((res)=>{
       setTodos(res?.data.data)
@@ -20,6 +22,16 @@ function App() {
     })
     
   },[])
+  socket.on('newTodo',(newTodo)=>{
+    
+    setTodos((prevTodos)=>[...prevTodos,newTodo])
+  })
+  socket.on('deleteTodo',(id)=>{
+    const updatedTodos = todos.filter((todo)=>{
+      return todo._id !== id
+    })
+    setTodos(updatedTodos)
+  })
   return (
     <>
       <div className='m-6 '>
