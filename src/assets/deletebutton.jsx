@@ -5,9 +5,7 @@ const DeleteButton = (value) => {
     const handleDelete = () => {
     
         axios.delete('http://localhost:3000/'+ value.value )
-        .then(()=>{
-          console.log('delete')
-        })
+        
         .catch((err)=>{
           console.log(err)
         })

@@ -70,10 +70,10 @@ app.delete('/:id', async (req, res) => {
       io.emit('deleteTodo', id)
   
       if (!result) {
-        return res.status(404).send('Book not found' )
+        return res.status(404).send('Todo not found' )
       }
   
-      return res.status(200).send('Book deleted successfully')
+      return res.status(200).send('Todo deleted successfully')
     } catch (err) {
       console.log(err)
       res.status(500).send(err)

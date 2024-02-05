@@ -23,6 +23,7 @@ function App() {
     
   },[])
   socket.on('newTodo',(newTodo)=>{
+    console.log(newTodo)
     
     setTodos((prevTodos)=>[...prevTodos,newTodo])
   })
@@ -30,6 +31,7 @@ function App() {
     const updatedTodos = todos.filter((todo)=>{
       return todo._id !== id
     })
+    console.log(updatedTodos)
     setTodos(updatedTodos)
   })
   return (

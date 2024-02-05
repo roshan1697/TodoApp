@@ -16,9 +16,7 @@ const AddButton = () => {
       description
     }
     axios.post('http://localhost:3000/', data)
-      .then(()=>{
-        console.log('sucess')
-      })
+      
       .catch((err)=>{
         console.log(err)
       })
