@@ -15,7 +15,7 @@ const Card = (todo) => {
           {todo.todo.description}
       </p>
       <DeleteButton value={todo.todo._id}/>
-      
+      <button >{todo.todo.done ? 'Done' : 'Mark as Done'}</button>
   </div>
 </div>
   )

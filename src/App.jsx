@@ -1,64 +1,63 @@
-import { useEffect, useState } from 'react'
-import Navbar from './components/navbar'
-import Card from './components/card'
-import axios from 'axios'
-import { io } from 'socket.io-client'
-function App() {
-  const [todos, setTodos] = useState([])
-  
-  const socket = io('http://localhost:3000',{ autoConnect: false})
+import { Routes,Route } from 'react-router-dom'
+import Login from './pages/login'
+import Signup from './pages/signup'
+import Todo from './pages/Todo'
 
+// import { io } from 'socket.io-client'
+import { useSetRecoilState } from 'recoil'
+import { authState } from './store/authState'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { useEffect } from 'react'
+function App() {
+    const setAuth = useSetRecoilState(authState);
+    const navigate = useNavigate();
+
+    const init = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await axios.get('http://localhost:3000/user/me', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            
+            if (response.data.username) {
+                
+                setAuth({  username: response.data.username });
+                navigate("/todos");
+            } else {
+                navigate("/login");
+            }
+        } catch (e) {
+            navigate("/login");
+        }
+    }
+    useEffect(() => {
+        init();
+    }, [])
+  
+  // socket.on('newTodo',(newTodo)=>{
+  //   console.log(newTodo)
     
-  useEffect(()=>{
-    socket.connect()
-    axios.get('http://localhost:3000/')
-    .then((res)=>{
-      setTodos(res?.data.data)
-      
-     
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
-    
-  },[])
-  socket.on('newTodo',(newTodo)=>{
-    console.log(newTodo)
-    
-    setTodos((prevTodos)=>[...prevTodos,newTodo])
-  })
-  socket.on('deleteTodo',(id)=>{
-    const updatedTodos = todos.filter((todo)=>{
-      return todo._id !== id
-    })
-    console.log(updatedTodos)
-    setTodos(updatedTodos)
-  })
+  //   setTodos((prevTodos)=>[...prevTodos,newTodo])
+  // })
+  // socket.on('deleteTodo',(id)=>{
+  //   const updatedTodos = todos.filter((todo)=>{
+  //     return todo._id !== id
+  //   })
+  //   console.log(updatedTodos)
+  //   setTodos(updatedTodos)
+  // })
   return (
     <>
-      <div className='m-6 '>
-
-      <Navbar/>
-      <div className='grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-        {todos === undefined ?
-          <div className="animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" >
-          <span className="sr-only">Loading...</span>
-        </div>
-        
-        :
-          
-          todos.map((todo, i)=>{
-           return <Card key={i} todo={todo}/>
-            
-          })
-         
-        }
-      
-      
-      </div>
-
-
-      </div>
+     <Routes>
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/signup' element={<Signup />} />
+                    <Route path='/' element={<Login />} />
+                    
+    
+                    <Route path='/todos' element={<Todo />} />
+                    
+                </Routes>
     </>
   )
 }

@@ -5,8 +5,7 @@ import { useState } from "react"
 const AddButton = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-    const dropdownButton = document.querySelector('#hs-dropdown-basic')
-    const dropdownList =document.querySelector('#dropdownlist')
+   
     const [open, setOpen] = useState(false)
 
    const handleClick = () => {
@@ -15,7 +14,11 @@ const AddButton = () => {
       title,
       description
     }
-    axios.post('http://localhost:3000/', data)
+    axios.post('http://localhost:3000/todo/todos',data ,{
+      headers:{
+        Authorization:'Bearer ' + localStorage.getItem('token')
+      }
+    })
       
       .catch((err)=>{
         console.log(err)

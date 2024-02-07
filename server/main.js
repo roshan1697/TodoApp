@@ -1,85 +1,31 @@
 import express from 'express';
-import { createServer } from 'node:http';
+// import { createServer } from 'node:http';
 import{ mongoURL} from './config.js'
-import { Server } from 'socket.io';
-import { Todo } from './TodoSchema.js'
+// import { Server } from 'socket.io';
 import cors from 'cors'
 import mongoose from 'mongoose'
-
+import userRoute from './routes/userroute.js'
+import todoRoute from './routes/todoroute.js'
 
 
 const app = express()
-const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin:'http://localhost:5173',
-  }
-})
+// const server = createServer(app);
+// const io = new Server(server, {
+//   cors: {
+//     origin:'http://localhost:5173',
+//   }
+// })
 app.use(express.json())
 
 
 
-app.use(cors())
+app.use(cors({
+  origin:'http://localhost:5173'
+}))
 
-app.get('/', async (req, res) => {
-    try {
-        const todos = await Todo.find({})
-    
-        return res.status(200).json({
-          data: todos,
-        })
-      }
-       catch (err) {
-        console.log(err)
-        res.status(500).send(err)
-      }
-    })
-  
-  app.post('/', async (req,res)=>{
-    
 
-    try {
-        if (
-            !req.body.title ||
-            !req.body.description 
-          ) {
-            return res.status(400).send({
-              message: 'Send all required fields: title, description',
-            })
-          }
-          const newTodo = {
-            
-            title: req.body.title,
-            description: req.body.description
-          }
-          const todo = await Todo.create(newTodo)
-          io.emit('newTodo', todo)
-          return res.status(201).send(todo)
-        } catch (err) {
-          console.log(err);
-          res.status(500).send(err)
-        }
-    
-  })
-  
-app.delete('/:id', async (req, res) => {
-    try {
-      const { id } = req.params
-  
-      const result = await Todo.findByIdAndDelete(id)
-      io.emit('deleteTodo', id)
-  
-      if (!result) {
-        return res.status(404).send('Todo not found' )
-      }
-  
-      return res.status(200).send('Todo deleted successfully')
-    } catch (err) {
-      console.log(err)
-      res.status(500).send(err)
-    }
-  })
-
+app.use("/user", userRoute);
+app.use("/todo", todoRoute);
 
   // io.on('connection', (socket) => {
   //   socket.on('chat message', (msg) => {
@@ -87,21 +33,21 @@ app.delete('/:id', async (req, res) => {
   //     });
   // });
 
-  io.on('connection', (socket) => {
-    console.log('User connected: ',socket.id)
+  // io.on('connection', (socket) => {
+  //   console.log('User connected: ',socket.id)
 
-    socket.on('disconnect',()=>{
-      console.log('User disconnected: ',socket.id)
+  //   socket.on('disconnect',()=>{
+  //     console.log('User disconnected: ',socket.id)
 
-    })
-  })
+  //   })
+  // })
 
 
 
 mongoose.connect(mongoURL).then(()=>
 {
     console.log('db connected')
-    server.listen(3000,()=>{
+    app.listen(3000,()=>{
         console.log('connected')
     })
 })

@@ -4,7 +4,11 @@ const DeleteButton = (value) => {
     
     const handleDelete = () => {
     
-        axios.delete('http://localhost:3000/'+ value.value )
+        axios.delete('http://localhost:3000/todo/todos/'+ value.value,{
+          headers:{
+            Authorization:'Bearer ' + localStorage.getItem('token')
+          }
+        } )
         
         .catch((err)=>{
           console.log(err)
