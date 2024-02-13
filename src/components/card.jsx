@@ -1,7 +1,28 @@
 
+import axios from "axios"
 import DeleteButton from "../assets/deletebutton"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { userTodoState } from "../store/selectors/todoState"
+import { todoState } from "../store/authState"
 
 const Card = (todo) => {
+  const setTodoState = useSetRecoilState(todoState)
+  const todoValue = useRecoilValue(userTodoState)
+  const useTodoValue  = useRecoilValue(todoState)
+  console.log(useTodoValue.isTodo)
+  const markDone = async(id )=>{
+    const res = await axios.patch('http://localhost:3000/todo/todos/'+id+'/done', " ",{
+      headers:{
+        Authorization:'Bearer ' + localStorage.getItem('token')
+      }
+    } )
+    const UpdatedTodo =  res?.data
+    if(UpdatedTodo) {
+      
+      setTodoState({isLoading:false,isTodo:todoValue.map((todo)=>{todo._id === UpdatedTodo._id ? UpdatedTodo : todo})})
+    }
+   
+  }
 
   
   return (
@@ -15,7 +36,7 @@ const Card = (todo) => {
           {todo.todo.description}
       </p>
       <DeleteButton value={todo.todo._id}/>
-      <button >{todo.todo.done ? 'Done' : 'Mark as Done'}</button>
+      <button onClick={()=>markDone(todo.todo._id)} >{todo.todo.done ? 'Done' : 'Mark as Done'}</button>
   </div>
 </div>
   )

@@ -7,3 +7,11 @@ export const authState = atom({
         username:null
     }
 })
+
+export const todoState = atom({
+    key:'todoState',
+    default:{
+        isLoading:true,
+        isTodo:[]
+    }
+})

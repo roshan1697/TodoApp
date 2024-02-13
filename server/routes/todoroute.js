@@ -66,20 +66,19 @@ router.delete('/todos/:id', authenticateJwt, async (req, res) => {
     }
   })
 
-  router.patch('/todos/:todoId/done', authenticateJwt, (req, res) => {
-    const { todoId } = req.params;
+  router.patch('/todos/:todoId/done', authenticateJwt, async(req, res) => {
+    const  {todoId}  = req.params;
     const userId = req.userId;
-  
-    Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
-      .then((updatedTodo) => {
-        if (!updatedTodo) {
-          return res.status(404).json({ error: 'Todo not found' });
-        }
-        res.json(updatedTodo);
-      })
-      .catch((err) => {
+   
+  try {
+    const updatedTodo = await Todo.findOneAndUpdate({ _id: todoId, userId }, { done: true }, { new: true })
+    if (!updatedTodo) {
+      return res.status(404).json({ error: 'Todo not found' });
+    }
+    res.json(updatedTodo);
+  }catch(err)  {
         res.status(500).json({ error: 'Failed to update todo' });
-      });
+      }
   });
 
   export default router
