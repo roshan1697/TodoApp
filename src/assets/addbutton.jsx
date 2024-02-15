@@ -8,21 +8,26 @@ const AddButton = () => {
    
     const [open, setOpen] = useState(false)
 
-   const handleClick = () => {
+   const handleClick = async() => {
     
     const data = {
       title,
       description
     }
-    axios.post('http://localhost:3000/todo/todos',data ,{
-      headers:{
-        Authorization:'Bearer ' + localStorage.getItem('token')
-      }
-    })
+    try {
       
-      .catch((err)=>{
-        console.log(err)
+    await  axios.post('http://localhost:3000/todo/todos',data ,{
+        headers:{
+          Authorization:'Bearer ' + localStorage.getItem('token')
+        }
       })
+      window.location ='/todos'
+    }
+    
+      
+      catch(err) {
+        console.log(err)
+      }
     
    }
 

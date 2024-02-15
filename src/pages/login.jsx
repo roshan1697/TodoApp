@@ -22,13 +22,17 @@ const Login = () => {
     };
 
     return (
-        <div style={{justifyContent: "center", display: "flex", width: "100%"}}>
-            <div>
-                <h2>Login</h2>
-                <input type='text' value={username} onChange={(e) => setUsername(e.target.value)} placeholder='Username' />
-                <input type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
-                New here? <Link to="/signup">Signup</Link>
-                <button onClick={handleLogin}>Login</button>
+        <div className='flex items-center justify-center h-screen border border-black'>
+            <div className='grid '>
+                <h2 className='text-xl font-semibold text-center'>Login</h2>
+                <input className='p-2 m-2 border-2 rounded-lg outline-none' type='text' value={username} onChange={(e) => setUsername(e.target.value)} placeholder='Username' />
+                <input className='p-2 m-2 border-2 rounded-lg outline-none' type='password' value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
+                <span className='px-2 my-2'>
+                    
+                New here? 
+                <Link className='text-blue-500 underline cursor-pointer' to="/signup"> Signup</Link>
+                </span>
+                <button className='px-4 py-2 font-semibold text-white bg-blue-500 border-2 rounded-xl hover:bg-blue-300' onClick={handleLogin}>Login</button>
             </div>
         </div>
     );

@@ -36,10 +36,10 @@ const Todo = () => {
       <div className='m-6 '>
 
       <Navbar/>
-      <div style={{display: "flex"}}>
-                <h2>Welcome {authStateValue.username}</h2>
-                <div style={{marginTop: 25, marginLeft: 20}}>
-                    <button onClick={() => {
+      <div className="flex items-center justify-between p-3">
+                <h2 className="text-3xl font-semibold">Welcome {authStateValue.username}</h2>
+                <div >
+                    <button className="px-4 py-2 font-semibold text-white bg-blue-500 border-2 rounded-xl hover:bg-blue-300" onClick={() => {
                         localStorage.removeItem("token");
                         window.location = "/login";
                     }}>Logout</button>

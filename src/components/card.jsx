@@ -9,17 +9,18 @@ const Card = (todo) => {
   const setTodoState = useSetRecoilState(todoState)
   const todoValue = useRecoilValue(userTodoState)
   const useTodoValue  = useRecoilValue(todoState)
-  console.log(useTodoValue.isTodo)
+
   const markDone = async(id )=>{
     const res = await axios.patch('http://localhost:3000/todo/todos/'+id+'/done', " ",{
       headers:{
         Authorization:'Bearer ' + localStorage.getItem('token')
       }
     } )
-    const UpdatedTodo =  res?.data
-    if(UpdatedTodo) {
-      
-      setTodoState({isLoading:false,isTodo:todoValue.map((todo)=>{todo._id === UpdatedTodo._id ? UpdatedTodo : todo})})
+    const Todo =  res?.data
+    if(Todo) {
+      setTodoState({isLoading:false,isTodo:useTodoValue.isTodo.map((todo)=>{
+        return todo._id === Todo._id ? Todo : todo
+       })})
     }
    
   }
