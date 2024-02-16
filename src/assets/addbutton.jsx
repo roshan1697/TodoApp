@@ -1,5 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
+import { useRecoilValue, useSetRecoilState } from "recoil"
+import { todoState } from "../store/authState"
 
 
 const AddButton = () => {
@@ -7,6 +9,8 @@ const AddButton = () => {
   const [description, setDescription] = useState('')
    
     const [open, setOpen] = useState(false)
+    const setTodoState = useSetRecoilState(todoState)
+    const todoVAlue = useRecoilValue(todoState)
 
    const handleClick = async() => {
     
@@ -16,12 +20,16 @@ const AddButton = () => {
     }
     try {
       
-    await  axios.post('http://localhost:3000/todo/todos',data ,{
+   const res = await  axios.post('http://localhost:3000/todo/todos',data ,{
         headers:{
           Authorization:'Bearer ' + localStorage.getItem('token')
         }
       })
-      window.location ='/todos'
+      const Todo = res?.data
+      if(res?.data){
+        
+        setTodoState({isLoading:false,isTodo:[...todoVAlue.isTodo,Todo]})
+      }
     }
     
       

@@ -1,20 +1,28 @@
 import axios from "axios"
+import { useRecoilValue, useSetRecoilState } from "recoil"
+import { todoState } from "../store/authState"
 
-const DeleteButton = (value) => {
-    
-    const handleDelete = () => {
-    
-        axios.delete('http://localhost:3000/todo/todos/'+ value.value,{
-          headers:{
-            Authorization:'Bearer ' + localStorage.getItem('token')
-          }
-        } )
+const DeleteButton = ({value}) => {
+  const setTodoState = useSetRecoilState(todoState)
+  const todoValue = useRecoilValue(todoState)  
+    const handleDelete = async() => {
+    try {
+
+     const res = await axios.delete('http://localhost:3000/todo/todos/'+ value,{
+        headers:{
+          Authorization:'Bearer ' + localStorage.getItem('token')
+        }
+      } )
+      
+      if(res?.statusText === 'OK'){
+       
+        setTodoState({isLoading:false,isTodo:todoValue.isTodo.filter((todo)=>{return todo._id !== value})})
+      }
+    }
         
-        .catch((err)=>{
+        catch(err){
           console.log(err)
-        }).then(
-          window.location ='/todos'
-        )
+        }
       }
     
   return (
